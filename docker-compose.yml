@@ -3,9 +3,6 @@ services:
   reflector:
     build: reflector
     restart: always
-    depends_on:
-      - mariadb
-      - redis
     environment:
       REFLECTOR_DOMAIN: demo.my-devices.net
       REFLECTOR_LICENSE: /home/reflector/etc/reflector.license
@@ -14,6 +11,8 @@ services:
       MYSQL_USERNAME: reflector
       MYSQL_PASSWORD: reflector
       MYSQL_HOST: mariadb
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
       LOGCHANNEL: file
       LOGPATH: /home/reflector/var/log/reflector.log
     volumes:
