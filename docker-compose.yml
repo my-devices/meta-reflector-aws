@@ -3,6 +3,8 @@ services:
   reflector:
     build: reflector
     restart: always
+    ports:
+      - "8000:8000"
     environment:
       REFLECTOR_DOMAIN: demo.my-devices.net
       REFLECTOR_LICENSE: /home/reflector/etc/reflector.license
