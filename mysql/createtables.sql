@@ -68,6 +68,7 @@ INSERT INTO auth_user (username, password) VALUES("admin", "3d29e163b9107fcb3107
 
 INSERT INTO auth_role VALUES("systemAdmin");
 INSERT INTO auth_role VALUES("reflectorAdmin");
+INSERT INTO auth_role VALUES("authAdmin");
 INSERT INTO auth_role VALUES("user");
 INSERT INTO auth_role VALUES("powerUser");
 
@@ -78,9 +79,11 @@ INSERT INTO auth_role_permissions VALUES("reflectorAdmin", "reflector.domain:*")
 INSERT INTO auth_role_permissions VALUES("reflectorAdmin", "reflector.device.*");
 INSERT INTO auth_role_permissions VALUES("reflectorAdmin", "domainAdmin");
 INSERT INTO auth_role_permissions VALUES("reflectorAdmin", "tenantAdmin");
+INSERT INTO auth_role_permissions VALUES("authAdmin", "reflector.user.*");
 INSERT INTO auth_role_permissions VALUES("powerUser", "reflector.device.*");
 INSERT INTO auth_user_roles VALUES("admin", "systemAdmin");
 INSERT INTO auth_user_roles VALUES("admin", "reflectorAdmin");
+INSERT INTO auth_user_roles VALUES("admin", "authAdmin");
 
 --
 -- Reflector
