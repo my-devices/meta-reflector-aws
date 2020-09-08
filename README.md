@@ -229,7 +229,6 @@ services:
       MYSQL_PASSWORD: reflector
       MYSQL_HOST: reflector.cscny3pe5mxx.eu-central-1.rds.amazonaws.com
       REDIS_HOST: reflector-redis.tw1u9f.0001.euc1.cache.amazonaws.com
-      REDIS_PORT: 6379
       LOGCHANNEL: file
       LOGPATH: /home/reflector/var/log/reflector.log
     volumes:
@@ -362,4 +361,4 @@ your setup allow the following communication:
 Furthermore, make sure the ALB idle timeout is set to a value greater than
 the default 60 seconds. We recommend setting it to one hour (3600 seconds).
 The value should be greater than the remote timeout (`webtunnel.remoteTimeout` property)
-configured in the macchina.io Remote Manager device agent (*WebTunnelAgent*).
+configured in the macchina.io Remote Manager device agent (`WebTunnelAgent`).
