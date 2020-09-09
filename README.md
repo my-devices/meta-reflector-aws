@@ -53,7 +53,8 @@ Select the *Ubuntu Server 18.04 LTS (HVM)* 64-bit (x86) Amazon Machine Image.
 In step 2, select a `t2.small` or `t2.medium` instance and
 click *Next: Configure Instance Details*.
 
-Select your default VPC (or a different VPC if desired).
+Select your default VPC (or a different VPC if desired). Make sure to use the same
+VPC for all services you'll set up.
 
 Click *Review & Launch*, then *Launch* on the *Review Instance Launch* screen.
 
@@ -81,7 +82,9 @@ $ sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docke
 $ sudo chmod +x /usr/local/bin/docker-compose
 ```
 
-Next, clone this repository to get access to the `createtables.sql` script:
+Next, clone this repository to get access to the `createtables.sql` script
+required later for setting up the database schema, as well as the files to
+set up the Docker container.
 
 ```
 $ git clone https://github.com/my-devices/meta-reflector-aws.git
@@ -101,8 +104,6 @@ and fill out the *Master username* (we'll use the default `admin`).
 Enter a *Master password* and *Confirm password*.
 
 Under *Connectivity*, select the same VPC as the one for your EC2 instance created earlier.
-
-Under *Additional configuration*, enter `reflector` as *Initial database name*.
 
 All other settings can be left at their defaults for now.
 
@@ -159,10 +160,11 @@ group settings and verify that access to port 3306 is allowed.
 Replace the host name (and, if necessary, username) with the values for your
 specific instance.
 
-Then run the following commands to create a new user account and grant the
-user access to the `reflector` database:
+Then run the following commands to create the `reflector` database and
+a new user account and grant the user access to the `reflector` database:
 
 ```
+MariaDB [(none)]> CREATE DATABASE reflector CHARACTER SET utf8;
 MariaDB [(none)]> GRANT SELECT, INSERT, UPDATE, DELETE, INDEX, CREATE, DROP, TRIGGER, ALTER ON reflector.* TO 'reflector'@'%' IDENTIFIED BY 'reflector';
 MariaDB [(none)]> quit
 ```
@@ -202,8 +204,10 @@ To set-up the Remote Manager server Docker container, log-in to the EC2 instance
 created in the first step and change directory to the `meta-reflector-aws`
 directory cloned from GitHub.
 Open the `docker-compose.yml` file in a text editor of your choice and
-add the correct values for `MYSQL_HOST` and `REDIS_HOST`. For
-`MYSQL_HOST`, enter the value of your RDS MariaDB endpoint, e.g.
+add the correct values for `REFLECTOR_DOMAIN`, `MYSQL_HOST` and `REDIS_HOST`.
+For `REFLECTOR_DOMAIN`, enter the domain name you want the Remote Manager server to
+run on, e.g. `demo.my-devices.net`.
+For `MYSQL_HOST`, enter the value of your RDS MariaDB endpoint, e.g.
 `reflector.cscny3pe5mxx.eu-central-1.rds.amazonaws.com`.
 For `REDIS_HOST`, enter the value of your ElastiCache Redis endpoint host name,
 e.g. `reflector-redis.tw1u9f.0001.euc1.cache.amazonaws.com` (do not include the
@@ -268,6 +272,8 @@ Click on *Hosted zones* and use one of your existing zones or create a new one
 for the domain the Remote Manager server will be using.
 In this example we're using a zone named `my-devices.net`. You have to use
 a different zone that matches the domain your server is running on.
+The zone will be required in the next step to validate the Certificate
+created by AWS Certificate Manager.
 
 
 ### Setting Up the Application Load Balancer
@@ -336,8 +342,8 @@ Select the ALB instance, under *Description*, locate *Attributes* and click
 ### Setting Up DNS via Route 53 (Part 2)
 
 The final step is adding the DNS `CNAME` entries for the new ALB instance.
-Create two CNAME entries, one for the base domain (in our case
-`demo.my-devices.net`), and one for the wildcard domain (in our case
+In Route 53, create two CNAME entries in your newly created zone, one for the
+base domain (in our case `demo.my-devices.net`), and one for the wildcard domain (in our case
 `*.demo.my-devices.net`). Both entries should point to the domain name of the
 ALB instance just created (e.g. `reflector-alb-974178111.eu-central-1.elb.amazonaws.com`).
 
