@@ -348,6 +348,17 @@ base domain (in our case `demo.my-devices.net`), and one for the wildcard domain
 ALB instance just created (e.g. `reflector-alb-974178111.eu-central-1.elb.amazonaws.com`).
 
 
+### Wrapping Up
+
+You should now be able to log-in to your new macchina.io Remote Manager server
+instance by navigating to the domain your server runs on, e.g. https://demo.my-devices.net
+As a first step after logging in, you should change the password for the `admin` user.
+Then, connect your first device via [`WebTunnelAgent`](https://github.com/my-devices/sdk)
+(also available as [Docker image](https://hub.docker.com/repository/docker/macchina/device-agent))
+or the [Remote Manager Gateway](https://github.com/my-devices/gateway)
+([Docker image](https://hub.docker.com/repository/docker/macchina/rmgateway)).
+
+
 ## Troubleshooting
 
 The most likely troubles will arise from VPC and security group settings preventing
