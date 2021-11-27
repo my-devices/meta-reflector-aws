@@ -1,25 +1,25 @@
-# macchina.io Remote Manager - AWS Deployment
+# macchina.io REMOTE - AWS Deployment
 
-## About macchina.io Remote Manager
+## About macchina.io REMOTE
 
-[macchina.io Remote Manager](https://macchina.io) provides secure remote access to connected devices
+[macchina.io REMOTE](https://macchina.io/remote) provides secure remote access to connected devices
 via HTTP or other TCP-based protocols and applications such as secure shell (SSH) or
-Virtual Network Computing (VNC). With macchina.io Remote Manager, any network-connected device
-running the Remote Manager Agent software (*WebTunnelAgent*)
+Virtual Network Computing (VNC). With macchina.io REMOTE, any network-connected device
+running the macchina.io REMOTE Device Agent software (*WebTunnelAgent*)
 can be securely accessed remotely over the internet from browsers, mobile apps, desktop,
 server or cloud applications.
 
 This even works if the device is behind a NAT router, firewall or proxy server.
 The device becomes just another host on the internet, addressable via its own URL and
-protected by the Remote Manager server against unauthorized or malicious access.
-macchina.io Remote Manager is a great solution for secure remote support and maintenance,
+protected by the macchina.io REMOTE server against unauthorized or malicious access.
+macchina.io REMOTE is a great solution for secure remote support and maintenance,
 as well as for providing secure remote access to devices for end-users via web or
 mobile apps.
 
-Visit [macchina.io](https://macchina.io/remote.html) to learn more and to register for a free account.
+Visit [macchina.io/remote](https://macchina.io/remote) to learn more and to register for a free account.
 Specifically, see the [Getting Started](https://macchina.io/remote_signup.html) page and the
 [Frequently Asked Questions](https://macchina.io/remote_faq.html) for
-information on how to use the macchina.io Remote Manager device agent.
+information on how to use the macchina.io REMOTE device agent.
 
 There is also a [blog post](https://macchina.io/blog/?p=257) showing step-by-step instructions to connect a Raspberry Pi.
 
@@ -27,7 +27,7 @@ There is also a [blog post](https://macchina.io/blog/?p=257) showing step-by-ste
 ## About This Repository
 
 This repository contains a documentation and sample configuration files to run the
-macchina.io Remote Manager server on AWS, using the following AWS services:
+macchina.io REMOTE server on AWS, using the following AWS services:
 
   - [Amazon EC2](https://aws.amazon.com/ec2/) to run the server
   - [Amazon RDS for MariaDB](https://aws.amazon.com/rds/mariadb/) to hold the data
@@ -42,7 +42,7 @@ macchina.io Remote Manager server on AWS, using the following AWS services:
 ### Setting Up an EC2 Linux Instance
 
 We will start by creating an EC2 Linux (Ubuntu 18.04) instance which will
-run the macchina.io Remote Manager server (in a Docker container) and also
+run the macchina.io REMOTE server (in a Docker container) and also
 help us set up the environment. Specifically, we'll also use this instance
 to set up the database schema later.
 
@@ -136,12 +136,12 @@ created. To enable triggers, follow the following steps:
 
 #### Creating the Database Schema
 
-Setting up the database schema is actually a bit tricky as the Remote Manager Server
+Setting up the database schema is actually a bit tricky as the macchina.io REMOTE Server
 docker image expects that the database schema has been created prior to starting it.
 
 For setting up the database schema, we'll use the EC2 Linux instance
 created in the first step to launch the `mysql` client to create the database
-schema and all tables required for the Remote Manager.
+schema and all tables required for the macchina.io REMOTE server.
 
 > Note: you can also connect to the MariaDB database via a VPN (if configured), or by
 giving the MariaDB instance public accessibility.
@@ -198,14 +198,14 @@ $ redis-cli -h reflector-redis.tw1u9f.0001.euc1.cache.amazonaws.com -p 6379
 If you cannot connect, check the security group settings and allow access to port 6379.
 
 
-### Setting Up the Remote Manager Container
+### Setting Up the macchina.io REMOTE Server Container
 
-To set-up the Remote Manager server Docker container, log-in to the EC2 instance
+To set-up the macchina.io REMOTE server Docker container, log-in to the EC2 instance
 created in the first step and change directory to the `meta-reflector-aws`
 directory cloned from GitHub.
 Open the `docker-compose.yml` file in a text editor of your choice and
 add the correct values for `REFLECTOR_DOMAIN`, `MYSQL_HOST` and `REDIS_HOST`.
-For `REFLECTOR_DOMAIN`, enter the domain name you want the Remote Manager server to
+For `REFLECTOR_DOMAIN`, enter the domain name you want the macchina.io REMOTE server to
 run on, e.g. `demo.my-devices.net`.
 For `MYSQL_HOST`, enter the value of your RDS MariaDB endpoint, e.g.
 `reflector.cscny3pe5mxx.eu-central-1.rds.amazonaws.com`.
@@ -251,7 +251,7 @@ Then, run:
 $ docker-compose up -d
 ```
 
-to start the Remote Manager server. You can verify that the server has started
+to start the macchina.io REMOTE server. You can verify that the server has started
 correctly by looking at the log file with:
 
 ```
@@ -269,7 +269,7 @@ $ sudo tail -f /var/lib/docker/volumes/meta-reflector-aws_logvolume/_data/reflec
 
 On the AWS Console, select *Services > Networking & Content Delivery > Route 53*.
 Click on *Hosted zones* and use one of your existing zones or create a new one
-for the domain the Remote Manager server will be using.
+for the domain the macchina.io REMOTE server will be using.
 In this example we're using a zone named `my-devices.net`. You have to use
 a different zone that matches the domain your server is running on.
 The zone will be required in the next step to validate the Certificate
@@ -325,7 +325,7 @@ Click *Next: Configure Routing*.
 
 Under *Target group*, select *New target group* (default), and enter a suitable
 *Name* (e.g., `reflector`). As *Target type*, select *instance*.
-Leave *Protocol* at *HTTP* and enter *Port* number `8000` (the port the Remote Manager
+Leave *Protocol* at *HTTP* and enter *Port* number `8000` (the port the macchina.io REMOTE
 server is running on), as configured in the `docker-compose.yml` file.
 
 Click *Next: Register Targets*.
@@ -350,12 +350,12 @@ ALB instance just created (e.g. `reflector-alb-974178111.eu-central-1.elb.amazon
 
 ### Wrapping Up
 
-You should now be able to log-in to your new macchina.io Remote Manager server
+You should now be able to log-in to your new macchina.io REMOTE server
 instance by navigating to the domain your server runs on, e.g. https://demo.my-devices.net
 As a first step after logging in, you should change the password for the `admin` user.
 Then, connect your first device via [`WebTunnelAgent`](https://github.com/my-devices/sdk)
 (also available as [Docker image](https://hub.docker.com/repository/docker/macchina/device-agent))
-or the [Remote Manager Gateway](https://github.com/my-devices/gateway)
+or the [macchina.io REMOTE Gateway](https://github.com/my-devices/gateway)
 ([Docker image](https://hub.docker.com/repository/docker/macchina/rmgateway)).
 
 
@@ -378,4 +378,4 @@ your setup allow the following communication:
 Furthermore, make sure the ALB idle timeout is set to a value greater than
 the default 60 seconds. We recommend setting it to one hour (3600 seconds).
 The value should be greater than the remote timeout (`webtunnel.remoteTimeout` property)
-configured in the macchina.io Remote Manager device agent (`WebTunnelAgent`).
+configured in the macchina.io REMOTE device agent (`WebTunnelAgent`).
