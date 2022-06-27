@@ -339,6 +339,12 @@ Select the ALB instance, under *Description*, locate *Attributes* and click
 *Edit attributes*. Set *Idle timeout* to `3600` and click *Save*.
 
 
+#### Health Check
+
+You can configure a health check on the ALB. The path `/my-devices/health.json` on the
+macchina.io REMOTE server can be used as an endpoint for the ALB health check.
+
+
 ### Setting Up DNS via Route 53 (Part 2)
 
 The final step is adding the DNS `CNAME` entries for the new ALB instance.
