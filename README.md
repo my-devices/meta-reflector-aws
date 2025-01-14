@@ -41,15 +41,15 @@ macchina.io REMOTE server on AWS, using the following AWS services:
 
 ### Setting Up an EC2 Linux Instance
 
-We will start by creating an EC2 Linux (Ubuntu 18.04) instance which will
+We will start by creating an EC2 Linux (Ubuntu 22.04) instance which will
 run the macchina.io REMOTE server (in a Docker container) and also
 help us set up the environment. Specifically, we'll also use this instance
 to set up the database schema later.
 
-To create a EC2 Linux (Ubuntu 18.04) instance, go to
+To create a EC2 Linux (Ubuntu 22.04) instance, go to
 *Service > Compute > EC2* and click *Launch instance*.
 
-Select the *Ubuntu Server 18.04 LTS (HVM)* 64-bit (x86) Amazon Machine Image.
+Select the *Ubuntu Server 22.04 LTS (HVM)* 64-bit (x86) Amazon Machine Image.
 In step 2, select a `t2.small` or `t2.medium` instance and
 click *Next: Configure Instance Details*.
 
@@ -63,7 +63,27 @@ install the necessary software, which includes Docker, MariaDB and Redis clients
 
 ```
 $ sudo apt-get update && sudo apt-get upgrade -y
-$ sudo apt-get install -y git docker.io mariadb-client redis-tools
+$ sudo apt-get install -y git mariadb-client redis-tools
+```
+
+To install Docker, follow the instruction in the [Docker documentation](https://docs.docker.com/engine/install/ubuntu/).
+First, the Docker `apt` repository must be added.
+
+```
+$ sudo install -m 0755 -d /etc/apt/keyrings
+$ sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+$ sudo chmod a+r /etc/apt/keyrings/docker.asc
+$ echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+$ sudo apt-get update
+```
+
+Then, install Docker and its dependencies with:
+
+```
+$ sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
 The `ubuntu` user account must be added to the docker group in order for the docker
@@ -74,13 +94,6 @@ $ sudo usermod -aG docker ubuntu
 ```
 
 After the `usermod` command, log out and log in again to make it effective.
-
-Also install *docker-compose* with:
-
-```
-$ sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-$ sudo chmod +x /usr/local/bin/docker-compose
-```
 
 Next, clone this repository to get access to the `createtables.sql` script
 required later for setting up the database schema, as well as the files to
@@ -248,7 +261,7 @@ your own one.
 Then, run:
 
 ```
-$ docker-compose up -d
+$ docker compose up -d
 ```
 
 to start the macchina.io REMOTE server. You can verify that the server has started

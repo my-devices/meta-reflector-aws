@@ -7,7 +7,7 @@
 -- access to all devices ("reflector.device:*", "reflector.domain:*").
 --
 
-SET SESSION sql_require_primary_key = 0;
+-- SET SESSION sql_require_primary_key = 0;
 
 --
 -- User Authentication
@@ -16,7 +16,7 @@ SET SESSION sql_require_primary_key = 0;
 CREATE TABLE auth_user
 (
 	username VARCHAR(64) PRIMARY KEY NOT NULL,
-	password VARCHAR(64) NOT NULL,
+	password VARCHAR(256) NOT NULL,
 	tenant VARCHAR(64),
 	domain VARCHAR(64),
 	firstName VARCHAR(64),
@@ -73,6 +73,7 @@ INSERT INTO auth_user (username, password) VALUES('admin', '3d29e163b9107fcb3107
 INSERT INTO auth_role VALUES('systemAdmin');
 INSERT INTO auth_role VALUES('reflectorAdmin');
 INSERT INTO auth_role VALUES('authAdmin');
+INSERT INTO auth_role VALUES('tenantAdmin');
 INSERT INTO auth_role VALUES('user');
 INSERT INTO auth_role VALUES('powerUser');
 
@@ -84,6 +85,8 @@ INSERT INTO auth_role_permissions VALUES('reflectorAdmin', 'reflector.device.*')
 INSERT INTO auth_role_permissions VALUES('reflectorAdmin', 'domainAdmin');
 INSERT INTO auth_role_permissions VALUES('reflectorAdmin', 'tenantAdmin');
 INSERT INTO auth_role_permissions VALUES('authAdmin', 'reflector.user.*');
+INSERT INTO auth_role_permissions VALUES('tenantAdmin', 'reflector.user.*');
+INSERT INTO auth_role_permissions VALUES('tenantAdmin', 'tenantAdmin');
 INSERT INTO auth_role_permissions VALUES('powerUser', 'reflector.device.*');
 INSERT INTO auth_user_roles VALUES('admin', 'systemAdmin');
 INSERT INTO auth_user_roles VALUES('admin', 'reflectorAdmin');
@@ -99,7 +102,7 @@ CREATE TABLE reflector_systemprop
 	value VARCHAR(1024)
 );
 
-INSERT INTO reflector_systemprop VALUES ('schemaVersion', 11);
+INSERT INTO reflector_systemprop VALUES ('schemaVersion', 12);
 
 CREATE TABLE reflector_domain
 (
